@@ -1,0 +1,13 @@
+КНОПКА
+<p align="center"><a class="knopka2" href="index.html">Скачать</a></p>
+КНОПКА ОТКРЫТИЕ В НОВОМ ОКНЕ
+<p align="center"><a class="knopka2" href="images/index.html" target="_blank">Скачать</a></p>
+-------------------------------------------------------------------------------------------------------------------------------------
+Главная               index.html
+ОС Windows          windows.html
+ОС Linux               linux.html
+Android                 android.html
+Программы            programs.html
+Игры                    games.html
+Обратная связь     contact.html
+-------------------------------------------------------------------------------------------------------------------------------------

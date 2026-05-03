@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Галерея | Контакты + Фото и Видео</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f5f7fc 0%, #eef2f8 100%);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 2rem 1.5rem;
+            color: #1e2a3e;
+        }
+
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ========== КОНТАКТНЫЙ БЛОК (в верхней части) ========== */
+        .contact-section {
+            background: white;
+            border-radius: 1.8rem;
+            padding: 1.8rem 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 15px 35px -12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: space-between;
+            align-items: stretch;
+        }
+
+        .contact-info {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .contact-info h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #2c3e66, #1a2a44);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1rem;
+            color: #2c3e44;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2edf5;
+        }
+
+        .contact-item i {
+            width: 32px;
+            height: 32px;
+            background: #eef3fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: #2c3e66;
+            font-size: 1rem;
+        }
+
+        .contact-item a {
+            color: #2c3e66;
+            text-decoration: none;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .contact-item a:hover {
+            color: #1a2a44;
+            text-decoration: underline;
+        }
+
+        /* Яндекс Карта */
+        .map-wrapper {
+            flex: 1.2;
+            min-width: 280px;
+            border-radius: 1.2rem;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            background: #eef2f5;
+        }
+
+        #yandexMap {
+            width: 100%;
+            height: 260px;
+            border-radius: 1.2rem;
+        }
+
+        /* Заголовок галереи */
+        .gallery-header {
+            text-align: center;
+            margin: 2rem 0 1.5rem 0;
+        }
+        .gallery-header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #2c3e66, #1a2a44);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .gallery-header p {
+            font-size: 1rem;
+            color: #4a627a;
+            margin-top: 0.5rem;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 500;
+            margin: 2rem 0 1.2rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #cbdde9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-title i {
+            color: #2c3e66;
+            font-size: 1.5rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.25s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .gallery-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 28px 36px -16px rgba(0, 0, 0, 0.2);
+        }
+
+        .media-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 75%;
+            overflow: hidden;
+            background-color: #1a1f2c;
+        }
+        .gallery-img, .gallery-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .gallery-video {
+            object-fit: cover;
+            pointer-events: none;
+        }
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            transition: 0.2s;
+        }
+        .gallery-item:hover .play-overlay {
+            background: rgba(0,0,0,0.2);
+        }
+        .play-overlay i {
+            font-size: 3rem;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            opacity: 0.9;
+        }
+
+        .media-info {
+            padding: 1rem 1.2rem 1.2rem;
+            background: white;
+        }
+        .media-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0;
+            color: #0f2b3d;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .media-title i {
+            color: #5f7f9e;
+            font-size: 0.85rem;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 20, 30, 0.96);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            width: 95vw;
+            max-width: 95vw;
+            height: auto;
+            max-height: 90vh;
+            position: relative;
+            background: transparent;
+            border-radius: 0;
+            overflow: hidden;
+            animation: zoomFade 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        @keyframes zoomFade {
+            from { transform: scale(0.96); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-media {
+            width: 100%;
+            height: auto;
+            max-height: 85vh;
+            object-fit: contain;
+            display: block;
+            background: black;
+            border-radius: 0.5rem;
+        }
+        .modal-video {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            max-height: 85vh;
+            background: black;
+            display: block;
+            outline: none;
+            border-radius: 0.5rem;
+        }
+        
+        .modal-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+            color: white;
+            padding: 1rem 1.5rem;
+            text-align: left;
+            pointer-events: none;
+        }
+        .modal-caption h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+        .modal-caption p {
+            display: none;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            color: white;
+            font-size: 2rem;
+            background: rgba(0,0,0,0.6);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: 0.2s;
+        }
+        .close-modal:hover { background: #c0392b; transform: scale(1.05); }
+        
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            color: white;
+            font-size: 2rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            transition: 0.2s;
+            z-index: 15;
+        }
+        .nav-btn:hover { background: #2c3e66; transform: translateY(-50%) scale(1.05); }
+        .prev-btn { left: 1rem; }
+        .next-btn { right: 1rem; }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.8rem;
+            color: #6c86a0;
+            border-top: 1px solid #cbdde9;
+            padding-top: 2rem;
+        }
+        .scroll-top {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: #2c3e66;
+            color: white;
+            width: 46px;
+            height: 46px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            z-index: 99;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .scroll-top.visible { opacity: 0.8; pointer-events: auto; }
+        .scroll-top:hover { opacity: 1; background: #1e2f4b; }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .contact-section { flex-direction: column; padding: 1.5rem; }
+            .map-wrapper { min-width: auto; }
+            #yandexMap { height: 220px; }
+            .section-title { font-size: 1.3rem; margin: 1.5rem 0 1rem; }
+            .nav-btn { font-size: 1.3rem; padding: 0.4rem 0.9rem; }
+            .close-modal { width: 36px; height: 36px; font-size: 1.5rem; }
+        }
+    </style>
+	    <!-- Банер -->
+<style>
+/* Жесткое переопределение стилей баннера */
+#all #all * #banner,
+#first #second #third #banner,
+div[id^="dV"][style*="fixed"],
+iframe[id^="iFb"][src^="/?"],
+body > div[style*="position"][style*="fixed"][style*="z-index"]
+{
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+</style>
+<script type="text/javascript" src="css/js/banner.js"></script>
+</head>
+<body>
+
+<div class="gallery-container">
+    <!-- КОНТАКТНЫЙ БЛОК В ВЕРХНЕЙ ЧАСТИ -->
+    <div class="contact-section">
+        <div class="contact-info">
+            <h2><i class="fas fa-address-card"></i> Адрес собаки</h2>
+            <div class="contact-details">
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Большое Болдино бульвар Осенний дом 38</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <a href="tel:+79092965223">+7 (909) 29-65-223</a>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <a href="keinu@yandex.ru">keinu@yandex.ru</a>
+                </div>
+                <div class="contact-item">
+                    <i class="fa-duotone fa-solid fa-dog"></i>
+                    <span>кличка собаки: Семен</span>
+                </div>
+            </div>
+        </div>
+        <div class="map-wrapper">
+            <div id="yandexMap"></div>
+        </div>
+    </div>
+
+    <div class="gallery-header">
+        <h1><i class="fas fa-images"></i> Визуальная галерея</h1>
+        <p>фотографии • видеосюжеты — раздельный просмотр</p>
+    </div>
+
+    <!-- Блок ФОТОГРАФИИ -->
+    <div class="section-title">
+        <i class="fas fa-camera"></i> Фотографии
+    </div>
+    <div class="gallery-grid" id="photoGrid"></div>
+
+    <!-- Блок ВИДЕО -->
+    <div class="section-title" style="margin-top: 3rem;">
+        <i class="fas fa-video"></i> Видео
+    </div>
+    <div class="gallery-grid" id="videoGrid"></div>
+
+    <div class="footer-note">
+        <i class="fas fa-play-circle"></i> Нажмите на фото или видео — полноэкранный просмотр 100%
+    </div>
+</div>
+
+<!-- Модальное окно -->
+<div id="lightboxModal" class="modal">
+    <span class="close-modal">&times;</span>
+    <div class="nav-btn prev-btn" id="prevMedia"><i class="fas fa-chevron-left"></i></div>
+    <div class="nav-btn next-btn" id="nextMedia"><i class="fas fa-chevron-right"></i></div>
+    <div class="modal-content">
+        <div id="modalMediaContainer"></div>
+        <div class="modal-caption" id="modalCaption">
+            <h3 id="modalTitle"></h3>
+            <p id="modalDesc"></p>
+        </div>
+    </div>
+</div>
+
+<button class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
+
+<script>
+    // ----- ФОТОГРАФИИ -----
+    const photosList = [
+        { id: 1, type: "image", url: "file/1.jpg", title: "1" },
+        { id: 2, type: "image", url: "file/2.jpg", title: "2" },
+        { id: 3, type: "image", url: "file/3.jpg", title: "3" },
+        { id: 4, type: "image", url: "file/4.jpg", title: "4" },
+        { id: 5, type: "image", url: "file/5.jpg", title: "5" },
+        { id: 6, type: "image", url: "file/6.jpg", title: "6" },
+        { id: 7, type: "image", url: "file/7.jpg", title: "7" },
+        { id: 8, type: "image", url: "file/8.jpg", title: "8" },
+		{ id: 9, type: "image", url: "file/9.jpg", title: "9" },
+		{ id: 10, type: "image", url: "file/10.jpg", title: "10" },
+		{ id: 11, type: "image", url: "file/11.jpg", title: "11" },
+		{ id: 12, type: "image", url: "file/12.jpg", title: "12" },
+		{ id: 13, type: "image", url: "file/13.jpg", title: "13" },
+		{ id: 14, type: "image", url: "file/14.jpg", title: "14" },
+		{ id: 15, type: "image", url: "file/15.jpg", title: "15" },
+		{ id: 16, type: "image", url: "file/16.jpg", title: "16" },
+		{ id: 17, type: "image", url: "file/17.jpg", title: "17" },
+		{ id: 18, type: "image", url: "file/18.jpg", title: "18" },
+		{ id: 19, type: "image", url: "file/19.jpg", title: "19" },
+		{ id: 20, type: "image", url: "file/20.jpg", title: "20" },
+		{ id: 21, type: "image", url: "file/21.jpg", title: "21" },
+		{ id: 22, type: "image", url: "file/22.jpg", title: "22" },
+		{ id: 23, type: "image", url: "file/23.jpg", title: "23" },
+    ];
+
+    // ----- ВИДЕОФАЙЛЫ -----
+    const videosList = [
+        { id: 101, type: "video", url: "file/1.mp4", title: "1" },
+        { id: 102, type: "video", url: "file/2.mp4", title: "2" },
+        { id: 103, type: "video", url: "file/3.mp4", title: "3" },
+        { id: 104, type: "video", url: "file/4.mp4", title: "4" },
+        { id: 105, type: "video", url: "file/6.mp4", title: "5" },
+        { id: 106, type: "video", url: "file/7.mp4", title: "6" },
+        { id: 107, type: "video", url: "file/8.mp4", title: "7" },
+		{ id: 108, type: "video", url: "file/9.mp4", title: "8" }
+    ];
+
+    const allMedia = [...photosList, ...videosList];
+
+    const photoGrid = document.getElementById('photoGrid');
+    const videoGrid = document.getElementById('videoGrid');
+    const modal = document.getElementById('lightboxModal');
+    const modalMediaContainer = document.getElementById('modalMediaContainer');
+    const modalTitle = document.getElementById('modalTitle');
+    const closeModalBtn = document.querySelector('.close-modal');
+    const prevBtn = document.getElementById('prevMedia');
+    const nextBtn = document.getElementById('nextMedia');
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+    let currentIndex = 0;
+    let isModalOpen = false;
+    let currentVideoElement = null;
+
+    // Создание карточки
+    function createMediaCard(item, globalIndex) {
+        const card = document.createElement('div');
+        card.className = 'gallery-item';
+        card.setAttribute('data-global-index', globalIndex);
+        const isVideo = item.type === 'video';
+        
+        let previewContent = '';
+        if (isVideo) {
+            previewContent = `
+                <div class="media-wrapper">
+                    <video class="gallery-video" muted preload="metadata" poster="">
+                        <source src="${escapeHtml(item.url)}" type="video/mp4">
+                    </video>
+                    <div class="play-overlay"><i class="fas fa-play-circle"></i></div>
+                </div>
+            `;
+        } else {
+            previewContent = `
+                <div class="media-wrapper">
+                    <img class="gallery-img" src="${escapeHtml(item.url)}" alt="${escapeHtml(item.title)}" loading="lazy">
+                </div>
+            `;
+        }
+        
+        card.innerHTML = `
+            ${previewContent}
+            <div class="media-info">
+                <div class="media-title">
+                    <i class="fas ${isVideo ? 'fa-video' : 'fa-image'}"></i> ${escapeHtml(item.title)}
+                </div>
+            </div>
+        `;
+        
+        card.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLightboxByGlobalIndex(globalIndex);
+        });
+        return card;
+    }
+
+    function renderPhotos() {
+        photoGrid.innerHTML = '';
+        photosList.forEach((photo) => {
+            const globalIdx = allMedia.findIndex(m => m.id === photo.id);
+            const card = createMediaCard(photo, globalIdx);
+            photoGrid.appendChild(card);
+        });
+    }
+
+    function renderVideos() {
+        videoGrid.innerHTML = '';
+        videosList.forEach((video) => {
+            const globalIdx = allMedia.findIndex(m => m.id === video.id);
+            const card = createMediaCard(video, globalIdx);
+            videoGrid.appendChild(card);
+        });
+    }
+
+    function openLightboxByGlobalIndex(index) {
+        if (index < 0) index = 0;
+        if (index >= allMedia.length) index = allMedia.length - 1;
+        if (allMedia.length === 0) return;
+        currentIndex = index;
+        updateModalMedia(currentIndex);
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        isModalOpen = true;
+    }
+
+    function updateModalMedia(index) {
+        const item = allMedia[index];
+        if (!item) return;
+        modalMediaContainer.innerHTML = '';
+        modalTitle.innerText = item.title || '';
+        
+        if (item.type === 'video') {
+            const videoElem = document.createElement('video');
+            videoElem.className = 'modal-video';
+            videoElem.controls = true;
+            videoElem.autoplay = true;
+            videoElem.loop = false;
+            videoElem.muted = false;
+            videoElem.playsInline = true;
+            videoElem.style.width = '100%';
+            videoElem.style.maxWidth = '100%';
+            videoElem.style.height = 'auto';
+            videoElem.style.maxHeight = '85vh';
+            videoElem.style.borderRadius = '0.5rem';
+            
+            const source = document.createElement('source');
+            source.src = item.url;
+            source.type = 'video/mp4';
+            videoElem.appendChild(source);
+            
+            videoElem.onerror = function() {
+                const errorMsg = document.createElement('div');
+                errorMsg.style.color = 'white';
+                errorMsg.style.background = 'rgba(0,0,0,0.7)';
+                errorMsg.style.padding = '1rem';
+                errorMsg.style.borderRadius = '0.5rem';
+                errorMsg.style.textAlign = 'center';
+                errorMsg.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Не удалось загрузить видео';
+                modalMediaContainer.innerHTML = '';
+                modalMediaContainer.appendChild(errorMsg);
+            };
+            
+            modalMediaContainer.appendChild(videoElem);
+            currentVideoElement = videoElem;
+            videoElem.play().catch(e => console.log('Автовоспроизведение заблокировано'));
+        } else {
+            const imgElem = document.createElement('img');
+            imgElem.src = item.url;
+            imgElem.alt = item.title || 'Фото';
+            imgElem.className = 'modal-media';
+            imgElem.style.width = '100%';
+            imgElem.style.height = 'auto';
+            imgElem.style.maxHeight = '85vh';
+            imgElem.style.objectFit = 'contain';
+            imgElem.style.borderRadius = '0.5rem';
+            modalMediaContainer.appendChild(imgElem);
+            currentVideoElement = null;
+        }
+    }
+
+    function closeLightbox() {
+        if (currentVideoElement) {
+            currentVideoElement.pause();
+            currentVideoElement = null;
+        }
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+        isModalOpen = false;
+        modalMediaContainer.innerHTML = '';
+    }
+
+    function nextMedia() {
+        if (allMedia.length === 0) return;
+        let newIndex = currentIndex + 1;
+        if (newIndex >= allMedia.length) newIndex = 0;
+        currentIndex = newIndex;
+        updateModalMedia(currentIndex);
+    }
+
+    function prevMedia() {
+        if (allMedia.length === 0) return;
+        let newIndex = currentIndex - 1;
+        if (newIndex < 0) newIndex = allMedia.length - 1;
+        currentIndex = newIndex;
+        updateModalMedia(currentIndex);
+    }
+
+    function handleKeydown(e) {
+        if (!isModalOpen) return;
+        if (e.key === 'Escape') closeLightbox();
+        else if (e.key === 'ArrowRight') nextMedia();
+        else if (e.key === 'ArrowLeft') prevMedia();
+    }
+
+    function handleScroll() {
+        if (window.scrollY > 300) scrollTopBtn.classList.add('visible');
+        else scrollTopBtn.classList.remove('visible');
+    }
+    
+    function scrollToTop() { 
+        window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    }
+
+    function initEvents() {
+        closeModalBtn.addEventListener('click', closeLightbox);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeLightbox();
+        });
+        prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prevMedia(); });
+        nextBtn.addEventListener('click', (e) => { e.stopPropagation(); nextMedia(); });
+        window.addEventListener('keydown', handleKeydown);
+        window.addEventListener('scroll', handleScroll);
+        scrollTopBtn.addEventListener('click', scrollToTop);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Яндекс Карта с координатами 55.004375, 45.328648
+    function initMap() {
+        const mapContainer = document.getElementById('yandexMap');
+        const lat = 55.004375;
+        const lon = 45.328648;
+        // Создаем iframe карты Яндекс с указанными координатами и меткой
+        const iframe = document.createElement('iframe');
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.style.border = '0';
+        iframe.style.borderRadius = '1.2rem';
+        iframe.loading = 'lazy';
+        iframe.allowFullscreen = true;
+        iframe.referrerPolicy = 'no-referrer-when-downgrade';
+        // Используем конструктор карты с меткой по координатам
+        iframe.src = `https://yandex.ru/map-widget/v1/?ll=${lon}%2C${lat}&z=17&pt=${lon},${lat},pm2rdm&l=map`;
+        mapContainer.appendChild(iframe);
+    }
+
+    // Запуск
+    renderPhotos();
+    renderVideos();
+    initEvents();
+    handleScroll();
+    initMap();
+</script>
+</body>
+</html>
